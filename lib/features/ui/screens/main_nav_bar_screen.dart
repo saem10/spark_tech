@@ -1,63 +1,44 @@
 import 'package:flutter/material.dart';
-import 'add_task_screen.dart';
-import 'home_screen.dart';
-import 'profile_screen.dart';
-import 'widgets/custom_bottom_nav.dart';
+import 'package:spark_tech/features/ui/screens/add_task_screen.dart';
+import 'package:spark_tech/features/ui/screens/home_screen.dart';
+import 'package:spark_tech/features/ui/screens/profile/profile_home_screen.dart';
+
 
 class MainNavBarScreen extends StatefulWidget {
   const MainNavBarScreen({super.key});
-  static const String name ='Main-navigation-bar';
+  static const String name= '/home';
 
   @override
   State<MainNavBarScreen> createState() => _MainNavBarScreenState();
 }
 
 class _MainNavBarScreenState extends State<MainNavBarScreen> {
-  int currentIndex = 0;
-  final List<String> tasks = [];
+  int _selectedIndex = 0;
+  final List<Widget> _screens= const[
 
-  void addTask(String task) {
-    setState(() {
-      tasks.add(task);
-      currentIndex = 0; // Go back to My Tasks
-    });
-  }
+    HomeScreen(),
+    AddTaskScreen(),
+    ProfileHomeScreen(),
+
+  ];
+
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      HomeScreen(tasks: tasks),
-      AddTaskScreen(onAddTask: addTask),
-      const ProfileScreen(),
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            const CircleAvatar(
-              radius: 18,
-              backgroundImage: AssetImage("assets/profile.png"),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              "Mir Saem Hasan",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: pages[currentIndex],
-      bottomNavigationBar: CustomBottomNav(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() => currentIndex = index);
-        },
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedIndex,
+          indicatorColor: Colors.green,
+          onDestinationSelected: (int index){
+            _selectedIndex = index;
+            setState(() {});
+          },
+          destinations:[
+            NavigationDestination(icon: Icon(Icons.home_outlined), label:'My Tasks'),
+            NavigationDestination(icon: Icon(Icons.add), label:'Add Task'),
+            NavigationDestination(icon: Icon(Icons.person_pin), label:'Profile'),
+          ]
       ),
     );
   }
