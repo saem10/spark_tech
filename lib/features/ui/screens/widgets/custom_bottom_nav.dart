@@ -44,7 +44,6 @@ class CustomBottomNav extends StatelessWidget {
       ),
     );
   }
-
   Widget _navItem({
     required IconData icon,
     required String label,
