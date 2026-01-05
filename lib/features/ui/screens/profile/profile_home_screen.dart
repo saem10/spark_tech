@@ -1,92 +1,101 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'account_setting_screen.dart';
-import 'my_profile_screen.dart';
-import 'profile_option_tile.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../data/services/profile_api_service.dart';
 
-class ProfileHomeScreen extends StatelessWidget {
-  const ProfileHomeScreen({super.key});
+class ProfileHomeScreen extends StatefulWidget {
+  const ProfileHomeScreen({
+    super.key,
+    this.profileImage,
+    required this.onProfileImageUpdated,
+  });
+
+  final File? profileImage;
+  final Function(File image) onProfileImageUpdated;
+
+  @override
+  State<ProfileHomeScreen> createState() => _ProfileHomeScreenState();
+}
+
+class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
+  final ImagePicker _picker = ImagePicker();
+  final ProfileApiService _profileService = ProfileApiService();
+
+  File? _selectedImage;
+  bool _isLoading = false;
+
+  Future<void> _pickImage() async {
+    final XFile? image =
+    await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    setState(() {
+      _selectedImage = File(image.path);
+    });
+  }
+
+  Future<void> _saveProfile() async {
+    if (_selectedImage == null) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _profileService.updateProfile(
+        firstName: 'Saem',
+        lastName: 'Hasan',
+        image: _selectedImage,
+      );
+
+      widget.onProfileImageUpdated(_selectedImage!);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final image = _selectedImage ?? widget.profileImage;
+
     return Scaffold(
-      body: SingleChildScrollView(
+      appBar: AppBar(title: const Text('Profile')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeader(),
-            _buildSection(
-              title: 'Profile',
-              children: [
-                ProfileOptionTile(
-                  icon: Icons.person,
-                  title: 'My Profile',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const MyProfileScreen(),
-                      ),
-                    );
-                  },
-                ),
-                ProfileOptionTile(
-                  icon: Icons.settings,
-                  title: 'Account Setting',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AccountSettingScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                image != null ? FileImage(image) : null,
+                child: image == null
+                    ? const Icon(Icons.camera_alt, size: 30)
+                    : null,
+              ),
             ),
-            _buildSection(
-              title: 'More',
-              children: [
-                ProfileOptionTile(icon: Icons.description, title: 'Terms & Condition'),
-                ProfileOptionTile(icon: Icons.privacy_tip, title: 'Privacy Policy'),
-                ProfileOptionTile(icon: Icons.help, title: 'Help / Support'),
-                ProfileOptionTile(icon: Icons.logout, title: 'Log Out'),
-              ],
+
+            const SizedBox(height: 24),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _saveProfile,
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Save Profile'),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      height: 220,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green, Colors.lightGreen],
-        ),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(radius: 45),
-          SizedBox(height: 8),
-          Text('Mojahid', style: TextStyle(color: Colors.white, fontSize: 18)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection({required String title, required List<Widget> children}) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          ...children,
-        ],
       ),
     );
   }

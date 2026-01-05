@@ -5,7 +5,7 @@ class TaskItemWidget extends StatelessWidget {
 
   const TaskItemWidget({
     super.key,
-    required this.title,
+    required this.title, required Future<Null> Function() onDelete, required String description,
   });
 
   @override
