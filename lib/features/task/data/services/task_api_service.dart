@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../core/network/api_config.dart';
-import '../../../core/network/token_storage.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/network/token_storage.dart';
 import '../models/task_model.dart';
 
 class TaskApiService {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spark_tech/features/ui/screens/log_in_screen.dart';
-import 'sign_up_screen.dart';
+import 'log_in_screen.dart';
+
 
 class SetPasswordScreen extends StatefulWidget {
   const SetPasswordScreen({super.key});

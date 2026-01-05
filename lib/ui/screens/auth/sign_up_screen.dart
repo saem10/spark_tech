@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spark_tech/features/ui/screens/verify_email_screen.dart';
-
+import '../../../features/auth/data/services/auth_api_service.dart';
 import 'log_in_screen.dart';
+import 'otp_screen.dart';
+import 'verify_email_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -15,6 +16,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   bool rememberMe = false;
   bool obscurePassword = true;
+  bool isLoading = false;
 
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _firstNameTEController = TextEditingController();
@@ -40,87 +42,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 80),
                 Text('Create Your Account', style: textTheme.titleLarge),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'Join Task Manager today -- organize better, work smarter, and stay in control of your day',
                   style: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
                 const SizedBox(height: 16),
 
-                ///First Name
-                const Text(
-                  'First Name',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
+                /// First Name
+                const Text('First Name',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _firstNameTEController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(hintText: "Saem"),
+                  decoration: const InputDecoration(hintText: "Saem"),
                 ),
                 const SizedBox(height: 16),
 
-                ///Last Name
-                const Text(
-                  'Last Name',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 8),
+                /// Last Name
+                const Text('Last Name',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _lastNameTEController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(hintText: "Hasan"),
+                  decoration: const InputDecoration(hintText: "Hasan"),
                 ),
                 const SizedBox(height: 16),
 
-                ///Email Address
-                const Text(
-                  "Email Address",
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
+                /// Email
+                const Text('Email Address',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _emailTEController,
-                  textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: "saem@example.com"),
+                  textInputAction: TextInputAction.next,
+                  decoration:
+                  const InputDecoration(hintText: "saem@example.com"),
                 ),
                 const SizedBox(height: 16),
 
                 /// Address
-                const Text(
-                  'Address',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 8),
+                const Text('Address',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _addressTEController,
                   textInputAction: TextInputAction.next,
-                  maxLines: 1,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Noakhali, Bangladesh",
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                ///Password
-                const Text(
-                  "Password",
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 8),
+                /// Password
+                const Text('Password',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _passwordTEController,
                   obscureText: obscurePassword,
                   decoration: InputDecoration(
-                    filled: true,
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
+                      icon: Icon(obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           obscurePassword = !obscurePassword;
@@ -131,23 +113,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                ///Confirm Password
-                const Text(
-                  "Confirm Password",
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 8),
+                /// Confirm Password
+                const Text('Confirm Password',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 TextFormField(
                   controller: _cpasswordTEController,
                   obscureText: obscurePassword,
                   decoration: InputDecoration(
-                    filled: true,
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
+                      icon: Icon(obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           obscurePassword = !obscurePassword;
@@ -156,9 +132,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
 
-                /// Remember Me
+                /// Terms
                 Row(
                   children: [
                     Checkbox(
@@ -170,29 +145,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         });
                       },
                     ),
-                    const Text(
-                      "I agree to the Terms & Condition and Privacy Policy",
+                    const Expanded(
+                      child: Text(
+                          "I agree to the Terms & Condition and Privacy Policy"),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-                /// OR Divider
+                /// Login link
                 Row(
-                  children: const [
-                    Expanded(child: Divider(thickness: 1, color: Colors.black)),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text("OR", style: TextStyle(color: Colors.black)),
-                    ),
-                    Expanded(child: Divider(thickness: 1, color: Colors.black)),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                ///long in
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Text("Already have an account? "),
                     GestureDetector(
@@ -202,22 +164,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: const Text(
                         "Log In",
                         style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
-                ///continue Button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, VerifyEmailScreen.name);
-                  },
-                  child: Text('Continue'),
+                /// Continue Button (API INTEGRATED)
+                SizedBox(
+                  width: double.infinity,
+                  height: 48, // IMPORTANT
+                  child: ElevatedButton(
+                    onPressed: isLoading ? null : _onContinuePressed,
+                    child: isLoading
+                        ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text('Continue'),
+                  ),
                 ),
+
               ],
             ),
           ),
@@ -225,6 +198,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  Future<void> _onContinuePressed() async {
+    setState(() => isLoading = true);
+
+    // allow UI to rebuild
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    try {
+      await AuthApiService.register(
+        firstName: _firstNameTEController.text.trim(),
+        lastName: _lastNameTEController.text.trim(),
+        email: _emailTEController.text.trim(),
+        password: _passwordTEController.text,
+        address: _addressTEController.text.trim(),
+      );
+
+      Navigator.pushNamed(
+        context,
+        OtpScreen.name,
+        arguments: _emailTEController.text.trim(),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
 
   @override
   void dispose() {

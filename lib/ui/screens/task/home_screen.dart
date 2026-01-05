@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../data/models/task_model.dart';
-import '../../data/services/task_api_service.dart';
-import 'widgets/task_item_widget.dart';
+import '../../../features/task/data/models/task_model.dart';
+import '../../../features/task/data/services/task_api_service.dart';
+import '../../widgets/task_item_widget.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.profileImage});
