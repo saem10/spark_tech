@@ -89,9 +89,39 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               /// Login Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, LoginScreen.name);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        title: const Text(
+                          'Registration Successful 🎉',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: const Text(
+                          'Your registration is complete.\nYou can now log in to your account.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // close dialog
+                              Navigator.pushReplacementNamed(
+                                context,
+                                LoginScreen.name,
+                              );
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
-                child: Text('Continue'),),
+                child: const Text('Continue'),
+              ),
 
               const Spacer(),
             ],

@@ -5,6 +5,7 @@ import 'profile_option_tile.dart';
 
 class ProfileHomeScreen extends StatelessWidget {
   const ProfileHomeScreen({super.key});
+  static const String name = 'Profile-home-screen';
 
   @override
   Widget build(BuildContext context) {

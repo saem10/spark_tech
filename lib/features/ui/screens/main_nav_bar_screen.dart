@@ -29,6 +29,7 @@ class _MainNavBarScreenState extends State<MainNavBarScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
+          indicatorShape: CircleBorder(),
           indicatorColor: Colors.green,
           onDestinationSelected: (int index){
             _selectedIndex = index;

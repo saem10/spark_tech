@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:spark_tech/features/ui/screens/home_screen.dart';
+import '../../controllers/task_controller.dart';
+import '../../models/task_model.dart';
+import 'main_screen.dart';
+
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
-
   static const String name = '/add-new-task-screen';
 
   @override
@@ -34,10 +39,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 TextFormField(
                   controller: _titleTEController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(hintText: "e.g. Design Leading Page Header"),
+                  decoration: const InputDecoration(
+                    hintText: "e.g. Design Landing Page Header",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Task title is required';
+                    }
+                    return null;
+                  },
                 ),
-
                 SizedBox(height: 16),
                 const Text(
                   'Description',
@@ -60,8 +71,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Save Task'),
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) return;
+
+                    final task = Task(
+                      title: _titleTEController.text.trim(),
+                      description: _descriptionTEController.text.trim(),
+                      date: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                    );
+                    TaskController.addTask(task);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MainScreen()),
+                          (route) => false,
+                    );
+
+                  },
+                  child: const Text('Save Task'),
                 ),
               ],
             ),
@@ -72,9 +98,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   @override
-  void deactivate() {
+  void dispose() {
     _titleTEController.dispose();
     _descriptionTEController.dispose();
-    super.deactivate();
+    super.dispose();
   }
 }

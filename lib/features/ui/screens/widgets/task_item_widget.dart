@@ -1,48 +1,19 @@
 import 'package:flutter/material.dart';
 
-class TaskItemWidget extends StatelessWidget {
-  final String title;
+import '../../../models/task_model.dart';
 
-  const TaskItemWidget({
-    super.key,
-    required this.title,
-  });
+class TaskItemWidget extends StatelessWidget {
+  final Task task;
+
+  const TaskItemWidget({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      child: ListTile(
-        title: Text(title),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Description will be here'),
-            const Text('Date: 8/9/2025'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Chip(
-                  label: Text('New'),
-                  backgroundColor: Colors.lightBlueAccent,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.delete),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return ListTile(
+      title: Text(task.title),
+      subtitle: Text('${task.description}\nDate: ${task.date}'),
+      trailing: const Icon(Icons.edit),
     );
   }
 }
+
